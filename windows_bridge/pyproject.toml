@@ -12,7 +12,7 @@ dependencies = ["bleak==3.0.2", "sounddevice==0.5.5", "numpy>=2.0,<3"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.6"]
-assets = ["lz4>=4", "pypng"]
+assets = ["pillow>=10"]
 
 [project.scripts]
 m5vibe = "m5vibe.__main__:main"

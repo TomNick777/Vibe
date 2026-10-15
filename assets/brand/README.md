@@ -1,12 +1,20 @@
 # Vibe LOGO
 
+## 当前设备图标
+
+`vibe-icon.svg` 是根据当前圆屏设计的可编辑图标，`vibe-icon.png` 为大图预览，`vibe-icon-200.png` 为设备原始尺寸预览。左侧青橙双线、右侧紫环与中央眼睛对应实际界面；没有文字和时钟，适合 200×200 菜单尺寸。静态弧长仅为品牌图形，不表示真实额度。
+
+`scripts/build-vibe-icon.py` 直接绘制图形并生成两种源文件及 `main/assets/vibe/icon_vibe.c`。设备资源为 200×200 非压缩 RGB565（80,000 bytes），与官方菜单图标格式一致，不需要透明通道或解压。复现：`uv run --with pillow --python 3.12 python scripts/build-vibe-icon.py`。新增资源后执行固件 reconfigure 再编译。
+
+## 历史品牌字标（v0.1）
+
 设计把 V 字形、声波和小伙伴表情结合在一起，使用青色到紫色的配色。图片由内置 OpenAI 图像生成工具生成（2026-10-15），透明 PNG 原图保持不变。
 
 - `vibe-logo-light.png`：深色字标，适合浅色背景。
 - `vibe-logo-dark.png`：浅色字标，适合深色 AMOLED 背景和设备菜单。
-- `main/assets/vibe/icon_vibe.c`：深色背景版本缩放至 200×200 后转换为 RGB565A8，采用 LVGL LZ4 压缩；转换时验证解压数据完全一致。
+- v0.1 菜单图标曾由深色字标缩放并压缩为 RGB565A8/LZ4；当前已由上述图标替代。
 
-复现资源转换（从仓库根目录执行）：
+历史版本资源转换命令（当前脚本已更新为上面的直接绘制流程）：
 
 ```powershell
 uv run --with pillow --with lz4 --python windows_bridge/.venv/Scripts/python.exe python scripts/build-vibe-icon.py

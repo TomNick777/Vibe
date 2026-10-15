@@ -7,11 +7,11 @@
 
 Vibe 是基于 M5Stack StopWatch 的蓝牙语音输入与 AI 额度面板，目前支持 Codex 与 X 共享周额度，后续计划接入 Grokbot 宠物。
 
-当前版本 **0.1**，基于官方固件逐项扩展，保留原有应用与 iPhone Agent。
+当前版本 **0.2**，基于官方固件逐项扩展，保留原有应用，已移除 iPhone Agent。
 
-默认圆屏显示眼睛、时钟与额度：左右整圈分别表示 Codex 周剩余和 X 共享周剩余，眼睛下方短弧表示 Codex 五小时剩余。轻触打开整屏额度页，左右滑动切换三项，轻触或十五秒无操作返回；录音开始立即返回。未知值显示 `--`，缓存或过期数据标为 `Cached`。旧版面板与主题已移除。
+圆屏显示眼睛与额度：左半环带以青色外线表示 Codex 周剩余、橙色内线表示五小时剩余，右半环为紫色 X 共享周剩余。轻触打开整屏额度页，左右滑动切换三项，轻触或十五秒无操作返回；录音开始立即返回。未知值显示 `--`，缓存或过期数据标为 `Cached`。旧版面板与主题已移除。
 
-BLE 语音与 X 共享周额度已通过真机验证；0.1 的下弧布局与详情页交互仍待真机回归。Grokbot 宠物数据和 Codex 桌面实时等待确认状态尚未接通，当前眼睛为本地状态动画。蓝牙名称为 `Vibe-*`，兼容旧 `M5Codex-*`。
+双线环对齐、菜单图标、iPhone Agent 移除、蓝牙连接与退出重进已通过真机确认。BLE 语音与 X 共享周额度已通过此前真机验证；0.2 连接修复后的文字转写与长段录音仍待确认。Grokbot 宠物数据和 Codex 桌面实时等待确认状态尚未接通，当前眼睛为本地状态动画。蓝牙名称为 `Vibe-*`，兼容旧 `M5Codex-*`。
 
 ## 使用与开发
 
@@ -33,12 +33,11 @@ uv pip install --python windows_bridge/.venv/Scripts/python.exe -e "windows_brid
 windows_bridge/.venv/Scripts/python.exe -m pytest windows_bridge/tests -q
 ```
 
-使用 ESP-IDF v5.5.4、LVGL v9.5.0；依赖通过 `python fetch_repos.py` 获取。本项目保留官方应用、iPhone Agent、双 OTA 分区与图片存储布局。烧录须使用验证备份和分区的 `scripts/flash-app.ps1`。
+使用 ESP-IDF v5.5.4、LVGL v9.5.0；依赖通过 `python fetch_repos.py` 获取。本项目保留官方应用、双 OTA 分区与图片存储布局。烧录须使用验证备份和分区的 `scripts/flash-app.ps1`。
 
 - [当前产品与验收说明](docs/vibe.md)
 - [LOGO 源图、提示词与资源转换](assets/brand/README.md)
 - [Windows Bridge](windows_bridge/README.md)
-- [iPhone Agent 移植说明](docs/iphone-agent.md)
 
 版本由根目录 `version.txt` 设置，设备版本显示直接读取固件描述；Bridge 版本在 `windows_bridge/m5vibe/__init__.py`，CLI 可用 `--version` 查询。
 

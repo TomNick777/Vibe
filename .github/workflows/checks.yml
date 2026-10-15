@@ -16,23 +16,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install companions
-        run: python -m pip install -e "windows_bridge[dev]" -e "server[dev]"
+      - name: Install Bridge
+        run: python -m pip install -e "windows_bridge[dev]"
       - name: Bridge tests
         run: python -m pytest windows_bridge/tests -q
       - name: Bridge lint
         run: python -m ruff check windows_bridge/m5vibe windows_bridge/tests
       - name: Bridge version
         run: python -m m5vibe --version
-      - name: iPhone Agent tests
-        run: python -m pytest server/tests -q
-      - name: iPhone Agent lint
-        run: python -m ruff check server/hidagent server/tests
-  protocol:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Compile and run device protocol tests
-        run: |
-          g++ -std=c++17 -Wall -Wextra -Werror -Imain/apps/app_iphone_agent tests/iphone_agent_protocol_test.cpp main/apps/app_iphone_agent/protocol.cpp -o protocol-test
-          ./protocol-test

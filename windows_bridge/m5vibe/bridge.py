@@ -324,10 +324,11 @@ class Bridge:
                     await asyncio.sleep(5)
                     continue
                 known_device = devices[0]
+                LOG.info("Connecting to Vibe at %s", known_device.address)
                 try:
                     await self.session(known_device)
                 except (RuntimeError, OSError, TimeoutError, BleakError, PortAudioError) as exc:
-                    LOG.warning("BLE session ended: %s", exc)
+                    LOG.warning("BLE session ended (%s): %s", type(exc).__name__, str(exc) or "no details")
                 await asyncio.sleep(5)
         finally:
             quota_task.cancel()

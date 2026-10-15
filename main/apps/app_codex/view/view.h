@@ -44,8 +44,6 @@ private:
     static void touchVibeEvent(lv_event_t* event);
     bool _vibe_details_visible = false;
     bool _vibe_details_dirty = true;
-    uint32_t _vibe_clock_tick = UINT32_MAX;
-    std::unique_ptr<uitk::lvgl_cpp::Label> _vibe_clock;
     codex::QuotaSnapshot _vibe_quota;
     uint32_t _vibe_details_until = 0;
     uint32_t _vibe_touch_until = 0;

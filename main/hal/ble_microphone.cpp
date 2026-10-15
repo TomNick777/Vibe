@@ -368,6 +368,13 @@ void link_update_task(void*)
         vTaskDelete(nullptr);
         return;
     }
+    if (g_link_update_attempts.load() == 0) {
+        const int phy_result = ble_gap_set_prefered_le_phy(g_connection_handle,
+                                                          BLE_GAP_LE_PHY_2M_MASK,
+                                                          BLE_GAP_LE_PHY_2M_MASK,
+                                                          BLE_GAP_LE_PHY_CODED_ANY);
+        ESP_LOGI(kTag, "secured link PHY request: %d", phy_result);
+    }
     ble_gap_upd_params params = {};
     params.itvl_min = 12;
     params.itvl_max = 12;
@@ -524,13 +531,8 @@ void on_connected(std::uint16_t connection_handle)
     g_connected = true;
     g_connection_handle = connection_handle;
     g_link_update_attempts = 0;
-    schedule_link_update();
-    const int phy_result = ble_gap_set_prefered_le_phy(connection_handle,
-                                                       BLE_GAP_LE_PHY_2M_MASK,
-                                                       BLE_GAP_LE_PHY_2M_MASK,
-                                                       BLE_GAP_LE_PHY_CODED_ANY);
-    const int length_result = ble_hs_hci_util_set_data_len(connection_handle, 251, 2120);
-    ESP_LOGI(kTag, "link requests: phy=%d data_length=%d", phy_result, length_result);
+    // NimBLE requests the maximum data length after the connect callback.
+    // Let security finish before requesting additional link changes.
 }
 
 void on_disconnected()
@@ -555,7 +557,9 @@ void on_disconnected()
 
 void on_gap_event(const ble_gap_event& event)
 {
-    if (event.type == BLE_GAP_EVENT_SUBSCRIBE) {
+    if (event.type == BLE_GAP_EVENT_ENC_CHANGE) {
+        if (event.enc_change.status == 0 && g_connected.load()) schedule_link_update();
+    } else if (event.type == BLE_GAP_EVENT_SUBSCRIBE) {
         if (event.subscribe.attr_handle == g_audio_handle) {
             g_audio_subscribed = event.subscribe.cur_notify != 0;
             ESP_LOGI(kTag, "audio notifications: %s", g_audio_subscribed ? "on" : "off");

@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
-#include <ctime>
 #include <cstring>
 
 using namespace view;
@@ -13,7 +12,7 @@ using namespace uitk::lvgl_cpp;
 
 namespace {
 constexpr uint32_t kWeek = 0x74E3F3;
-constexpr uint32_t kFive = 0x58B6EB;
+constexpr uint32_t kFive = 0xFFBB68;
 constexpr uint32_t kGrok = 0xB39AFF;
 constexpr uint32_t kTrack = 0x202832;
 constexpr uint32_t kDim = 0x697585;
@@ -82,7 +81,6 @@ void CodexView::initVibe(lv_obj_t* parent)
         label->align(LV_ALIGN_TOP_MID, 0, y);
         label->removeFlag(LV_OBJ_FLAG_CLICKABLE);
     };
-    makeLabel(_vibe_clock, 72, &lv_font_montserrat_20);
     makeLabel(_vibe_quota_name, 132, &lv_font_montserrat_20);
     makeLabel(_vibe_quota_value, 186, &lv_font_montserrat_48);
     lv_obj_set_style_transform_pivot_x(_vibe_quota_value->get(), 150, 0);
@@ -114,16 +112,6 @@ void CodexView::updateVibe()
         _panel->setBgColor(lv_color_hex(background));
         _vibe_background = background;
     }
-    // The clock has minute precision; check wall time once a second, not per animation frame.
-    if (_vibe_clock_tick == UINT32_MAX || now - _vibe_clock_tick >= 1000) {
-        _vibe_clock_tick = now;
-        const auto time = std::time(nullptr);
-        std::tm local{};
-        char clock[24] = "Vibe";
-        if (time > 1700000000 && localtime_r(&time, &local)) std::strftime(clock, sizeof(clock), "%H:%M", &local);
-        setTextIfChanged(*_vibe_clock, clock);
-    }
-
     if (_voice_mode != VoiceMode::Idle) {
         _vibe_details_until = 0;
         _vibe_touch_tracking = false;
@@ -132,7 +120,6 @@ void CodexView::updateVibe()
     if (details != _vibe_details_visible) {
         _vibe_details_visible = details;
         _vibe_details_dirty = true;
-        _vibe_clock->setHidden(details);
         for (auto* label : {_vibe_quota_name.get(), _vibe_quota_value.get(),
                             _vibe_quota_caption.get(), _vibe_quota_reset.get()}) {
             label->setHidden(!details);
@@ -256,7 +243,7 @@ void CodexView::drawVibe(lv_layer_t* layer, int x, int y)
         d.width = width;
         d.color = lv_color_hex(fill);
         d.opa = opa;
-        d.rounded = width != 13;  // Keep weekly joins flat; separate dials have rounded ends.
+        d.rounded = width == 15;  // Only the independent detail dial has rounded ends.
         lv_draw_arc(layer, &d);
     };
     auto progress = [&](int radius, int start, int sweep, int pct, bool stale,
@@ -278,12 +265,17 @@ void CodexView::drawVibe(lv_layer_t* layer, int x, int y)
         }
         return;
     }
-    // Preserve the two connected weekly halves; the short lower dial is independent.
-    arc(214, 0, 360, kTrack, LV_OPA_COVER, 13);
-    progress(214, 90, 180, week.remaining, week.stale, week.color, 13);
-    progress(214, 270, 180, shared.remaining, shared.stale, shared.color, 13, true);
-    arc(137, 40, 140, kTrack, LV_OPA_COVER, 9);
-    progress(137, 40, 100, five.remaining, five.stale, five.color, 9);
+    // Two independent Codex readings share one left band without hiding each other.
+    // LVGL uses the OUTER radius, while the preview uses a centered stroke.
+    // Both halves occupy radii 205..223; left lanes leave a 2px middle gap.
+    constexpr int ringOuter = 223;
+    constexpr int ringWidth = 18;
+    constexpr int laneWidth = 8;
+    constexpr int laneGap = 2;
+    arc(ringOuter, 0, 360, kTrack, LV_OPA_COVER, ringWidth);
+    progress(ringOuter, 90, 180, week.remaining, week.stale, week.color, laneWidth);
+    progress(ringOuter - laneWidth - laneGap, 90, 180, five.remaining, five.stale, five.color, laneWidth);
+    progress(ringOuter, 270, 180, shared.remaining, shared.stale, shared.color, ringWidth, true);
 
     const uint32_t blinkPhase = now % 4700;
     float open = !connected ? 0.22f + 0.05f * std::sin(t) : 1.0f;

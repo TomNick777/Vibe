@@ -105,7 +105,6 @@ std::atomic<bool> g_started{false};
 std::atomic<bool> g_connected{false};
 bool g_paired = false;
 bool g_advertising = false;
-bool g_random_addr_set = false;
 char g_device_name[16] = "Vibe-AA";
 uint8_t g_own_addr_type = BLE_OWN_ADDR_RANDOM;
 uint16_t g_conn_handle = BLE_HS_CONN_HANDLE_NONE;
@@ -978,6 +977,7 @@ int gap_event(ble_gap_event* event, void*)
         return 0;
     case BLE_GAP_EVENT_ENC_CHANGE:
         g_paired = event->enc_change.status == 0;
+        ble_microphone::on_gap_event(*event);
         update_ble_battery_level();
         ESP_LOGI(kTag, "encryption changed: status=%d", event->enc_change.status);
         set_host_status(g_paired ? "BLE paired" : "Pairing failed");
@@ -1128,7 +1128,7 @@ void reset_callback(int reason)
     set_host_status("BLE host reset");
 }
 
-void prepare_identity()
+bool prepare_identity()
 {
     uint8_t mac[6] = {};
     esp_efuse_mac_get_default(mac);
@@ -1150,11 +1150,11 @@ void prepare_identity()
     if (addr_rc != 0) {
         mclog::tagWarn(kTag, "set random addr failed: {}", addr_rc);
         set_host_status("BLE address failed");
-        return;
+        return false;
     }
 
-    g_random_addr_set = true;
     mclog::tagDebug(kTag, "identity prepared: {}", g_device_name);
+    return true;
 }
 
 void advertise()
@@ -1163,12 +1163,9 @@ void advertise()
         return;
     }
 
-    if (!g_random_addr_set) {
-        prepare_identity();
-        if (!g_random_addr_set) {
-            return;
-        }
-    }
+    // NimBLE clears its address store on host reset. Restore the same identity
+    // before each advertising session rather than trusting an application flag.
+    if (!prepare_identity()) return;
 
     ble_svc_gap_device_name_set(g_device_name);
     ble_svc_gap_device_appearance_set(kAppearanceKeyboard);

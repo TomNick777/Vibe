@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 #pragma once
 namespace wifi_stack {
-// Shared by the mutually exclusive Badge AP and iPhone Agent station sessions.
+// Initialize Wi-Fi once for the Badge configuration AP.
 bool ensure_ready();
 }
