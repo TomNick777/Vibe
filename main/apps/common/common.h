@@ -5,9 +5,10 @@
  */
 #pragma once
 #include <string_view>
+#include <esp_app_desc.h>
 
 namespace common {
 
-inline constexpr std::string_view FirmwareVersion = "V0.5";
+inline const std::string_view FirmwareVersion = esp_app_get_description()->version;
 
 }

@@ -63,3 +63,22 @@ obj/
 
 sdkconfig
 sdkconfig.old
+
+# Local upstream references, SDKs, credentials and device backups
+/external/
+/.tools/
+/backups/
+main/apps/app_iphone_agent/config.local.h
+/server/.env
+/server/.hidagent/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+/windows_bridge/config.local.json
+/windows_bridge/.state/
+
+# Local assistant/deployment history; public guides live in README.md and docs/.
+/AGENTS.md
+/PROJECT_STATE.md
+/docs/vibecoding.md

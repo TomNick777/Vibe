@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 #include "config_ap.h"
+#include <hal/utils/wifi_stack/wifi_stack.h>
 
 #include <cstdint>
 #include <cstdlib>
@@ -47,50 +48,6 @@ constexpr const char* _captive_portal_urls[] = {
     "/library/test/success.html",
 };
 
-bool ensure_wifi_stack_ready()
-{
-    static std::mutex mutex;
-    static bool initialized = false;
-
-    std::lock_guard<std::mutex> lock(mutex);
-    if (initialized) {
-        return true;
-    }
-
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
-    }
-    if (ret != ESP_OK) {
-        ESP_LOGE(_tag, "nvs init failed: %s", esp_err_to_name(ret));
-        return false;
-    }
-
-    ret = esp_netif_init();
-    if (ret != ESP_OK && ret != ESP_ERR_INVALID_STATE) {
-        ESP_LOGE(_tag, "netif init failed: %s", esp_err_to_name(ret));
-        return false;
-    }
-
-    ret = esp_event_loop_create_default();
-    if (ret != ESP_OK && ret != ESP_ERR_INVALID_STATE) {
-        ESP_LOGE(_tag, "event loop init failed: %s", esp_err_to_name(ret));
-        return false;
-    }
-
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    cfg.nvs_enable         = false;
-    ret                    = esp_wifi_init(&cfg);
-    if (ret != ESP_OK && ret != ESP_ERR_INVALID_STATE) {
-        ESP_LOGE(_tag, "wifi init failed: %s", esp_err_to_name(ret));
-        return false;
-    }
-
-    initialized = true;
-    return true;
-}
-
 std::string make_ap_ssid()
 {
     uint8_t mac[6] = {};
@@ -114,7 +71,7 @@ public:
 
     bool run()
     {
-        if (!ensure_wifi_stack_ready()) {
+        if (!wifi_stack::ensure_ready()) {
             log("Wi-Fi initialization failed");
             return false;
         }

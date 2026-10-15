@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "m5vibe"
+dynamic = ["version"]
+description = "Vibe Windows BLE voice input and AI quota panel bridge"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = ["bleak==3.0.2", "sounddevice==0.5.5", "numpy>=2.0,<3"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+assets = ["lz4>=4", "pypng"]
+
+[project.scripts]
+m5vibe = "m5vibe.__main__:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "m5vibe.__version__"}
+
+[tool.setuptools]
+packages = ["m5vibe"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

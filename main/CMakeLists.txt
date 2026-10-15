@@ -1,3 +1,4 @@
+# ESP-IDF also reads this file in script mode; reconfigure after source additions/removals.
 file(GLOB_RECURSE MY_SRCS
     "apps/*.c"
     "apps/*.cc"

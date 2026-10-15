@@ -43,3 +43,6 @@ LV_IMG_DECLARE(big_number_6);
 LV_IMG_DECLARE(big_number_7);
 LV_IMG_DECLARE(big_number_8);
 LV_IMG_DECLARE(big_number_9);
+
+// Vibe brand asset.
+LV_IMG_DECLARE(icon_vibe);
