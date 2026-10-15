@@ -68,9 +68,7 @@ sdkconfig.old
 /external/
 /.tools/
 /backups/
-main/apps/app_iphone_agent/config.local.h
-/server/.env
-/server/.hidagent/
+/server/
 __pycache__/
 *.egg-info/
 .pytest_cache/

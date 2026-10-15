@@ -1,0 +1,41 @@
+<div id="vibe-shared-ring">
+  <div class="viz-carousel viz-dotted-background" aria-label="Vibe 左环方案" data-previous-label="上一方案" data-next-label="下一方案">
+    <section data-variant="同轨双线" aria-label="同轨双线预览"><div class="vs-stage"><svg viewBox="0 0 466 466" role="img" aria-label="左侧青色周额度、橙色五小时额度，右侧紫色 X 周额度"></svg></div></section>
+    <section data-variant="宽轨叠线" aria-label="宽轨叠线预览" hidden><div class="vs-stage"><svg viewBox="0 0 466 466" role="img" aria-label="青色宽线表示周额度，橙色细线叠加表示五小时额度"></svg></div></section>
+  </div>
+  <div class="vs-legend" aria-live="polite"></div>
+  <div class="vs-note">模拟剩余额度 · 可调整数值查看重叠效果</div>
+</div>
+<style>
+#vibe-shared-ring{--vs-week:#74e3f3;--vs-five:#ffbb68;--vs-x:#b39aff;--vs-ink:light-dark(#263346,#d4dde8);font-family:system-ui,sans-serif;color:var(--vs-ink)}
+#vibe-shared-ring .vs-stage{display:flex;align-items:center;justify-content:center;padding:22px 8px 16px;min-height:330px}
+#vibe-shared-ring svg{display:block;width:min(100%,400px);height:auto;overflow:visible}
+#vibe-shared-ring .vs-legend{display:flex;gap:12px 20px;flex-wrap:wrap;justify-content:center;margin:18px 0 8px;font-size:13px}
+#vibe-shared-ring .vs-item{display:inline-flex;align-items:center;gap:7px}
+#vibe-shared-ring .vs-dot{width:9px;height:9px;border-radius:50%;display:inline-block}
+#vibe-shared-ring .vs-note{text-align:center;font-size:12px;opacity:.7;padding-bottom:10px}
+</style>
+<script>
+(()=>{
+ const root=document.getElementById('vibe-shared-ring');
+ const state={week:68,five:35,x:90};
+ const saved=window.openai?.widgetState?.modelContent;
+ if(saved) for(const k of ['week','five','x']) if(Number.isFinite(saved[k]))state[k]=Math.max(0,Math.min(100,saved[k]));
+ function arc(r,a,b,color,w){if(b<=a)return '';const p=t=>[233+r*Math.cos(t*Math.PI/180),233+r*Math.sin(t*Math.PI/180)];const s=p(a),e=p(b);return `<path d="M ${s[0]} ${s[1]} A ${r} ${r} 0 ${b-a>180?1:0} 1 ${e[0]} ${e[1]}" fill="none" stroke="${color}" stroke-width="${w}"/>`;}
+ function render(){
+ root.querySelectorAll('section').forEach((section,i)=>{
+ let marks='<circle cx="233" cy="233" r="233" fill="#05080d"/><circle cx="233" cy="233" r="214" fill="none" stroke="#202832" stroke-width="18"/>';
+ if(i===0){marks+=arc(219,90,90+1.8*state.week,'#74e3f3',8)+arc(209,90,90+1.8*state.five,'#ffbb68',8);}
+ else{marks+=arc(214,90,90+1.8*state.week,'#74e3f3',18)+arc(214,90,90+1.8*state.five,'#ffbb68',6);}
+ marks+=arc(214,450-1.8*state.x,450,'#b39aff',18);
+ marks+='<text x="233" y="92" text-anchor="middle" fill="#c4d2df" font-family="Arial,sans-serif" font-size="20">14:28</text>';
+ for(const x of [164,264])marks+=`<rect x="${x}" y="183" width="38" height="64" rx="19" fill="#83c9f4"/><rect x="${x+10}" y="192" width="8" height="12" rx="4" fill="#f0fdff" opacity=".63"/>`;
+ section.querySelector('svg').innerHTML=marks;
+ });
+ root.querySelector('.vs-legend').innerHTML=[['week','Codex 周','#74e3f3'],['five','五小时','#ffbb68'],['x','X 周','#b39aff']].map(([k,label,c])=>`<span class="vs-item"><span class="vs-dot" style="background:${c}"></span>${label} ${state[k]}%</span>`).join('');
+ }
+ render();
+ if(globalThis.Tweak){const tweak=new Tweak({container:root,onChange:()=>{render();window.openai?.setWidgetState({modelContent:{...state}})?.catch(()=>{});}});for(const [key,label]of [['week','Codex 周剩余'],['five','五小时剩余'],['x','X 周剩余']])tweak.addSlider(state,key,{label,min:0,max:100,unit:'%'});}
+ window.addEventListener('openai:set_globals',event=>{const s=event.detail?.globals?.widgetState?.modelContent;if(s){for(const k of ['week','five','x'])if(Number.isFinite(s[k]))state[k]=Math.max(0,Math.min(100,s[k]));render();}});
+})();
+</script>

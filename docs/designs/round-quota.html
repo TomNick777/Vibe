@@ -1,0 +1,103 @@
+<style>
+#vibe-round-design .stage{min-height:468px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 12px;gap:18px}
+#vibe-round-design .product{--v-bg:#05080d;--v-text:#ecf3fa;--v-muted:#8b9aaa;--v-track:#202832;--v-week:#74e3f3;--v-five:#58b6eb;--v-x:#b39aff;color:var(--v-text);font-family:Arial,sans-serif;display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:390px}
+#vibe-round-design .dial{position:relative;width:min(100%,350px);aspect-ratio:1;border-radius:50%;background:var(--v-bg);overflow:hidden;box-shadow:0 0 0 5px #232831}
+#vibe-round-design .rings{position:absolute;inset:0;width:100%;height:100%}
+#vibe-round-design .clock{position:absolute;top:15%;width:100%;text-align:center;font-size:19px;color:#c4d2df;letter-spacing:1px}
+#vibe-round-design .eyes{position:absolute;top:39%;left:0;width:100%;display:flex;justify-content:center;gap:46px}
+#vibe-round-design .eye{height:47px;width:29px;background:#83c9f4;border-radius:17px;position:relative}
+#vibe-round-design .eye:after{content:"";position:absolute;top:8px;left:7px;width:6px;height:9px;border-radius:3px;background:#e5f8ff}
+#vibe-round-design .detail{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;text-align:center;pointer-events:none}
+#vibe-round-design .detail-label{font-size:17px;color:var(--v-muted)}
+#vibe-round-design .number{font-size:68px;line-height:1.05;letter-spacing:-3px;font-weight:500;font-variant-numeric:tabular-nums}
+#vibe-round-design .number span{font-size:26px;letter-spacing:0;margin-left:3px}
+#vibe-round-design .remaining{font-size:14px;color:var(--v-muted)}
+#vibe-round-design .reset{font-size:15px;margin-top:14px;color:#c4d2df}
+#vibe-round-design .face-controls{position:absolute;inset:0;width:100%;height:100%;background:none;border:0;border-radius:50%;color:transparent}
+#vibe-round-design .dots{position:absolute;bottom:14%;display:flex;justify-content:center;gap:7px;width:100%}
+#vibe-round-design .dot{width:5px;height:5px;background:#3b4652;border-radius:50%}
+#vibe-round-design .dot.active{background:#ecf3fa}
+#vibe-round-design .switches{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+#vibe-round-design .switches button{font:14px Arial,sans-serif;padding:9px 12px;border:1px solid #394552;border-radius:20px;background:#111923;color:#c4d2df;min-height:38px}
+#vibe-round-design .switches button[aria-pressed=true]{background:#c4d2df;color:#081019;border-color:#c4d2df}
+#vibe-round-design .sample{font:12px Arial,sans-serif;color:light-dark(#576273,#a9b4c2);text-align:center}
+#vibe-round-design [hidden]{display:none!important}
+@media(max-width:380px){#vibe-round-design .stage{min-height:435px}#vibe-round-design .number{font-size:58px}}
+</style>
+<div id="vibe-round-design" class="viz-carousel viz-dotted-background" aria-label="Vibe 圆形额度方案" data-previous-label="上一方案" data-next-label="下一方案">
+  <section data-variant="下弧副表盘" aria-label="下弧副表盘方案">
+    <div class="stage"><div class="product" data-layout="subdial" aria-label="下弧副表盘交互预览">
+      <div class="dial">
+        <svg class="rings" viewBox="0 0 466 466" role="img" aria-label="周额度外圈与五小时下弧"><g class="ring-data"></g></svg>
+        <div class="clock">20:18</div><div class="eyes"><div class="eye"></div><div class="eye"></div></div>
+        <div class="detail" hidden aria-live="polite"><div class="detail-label"></div><div class="number"></div><div class="remaining">remaining</div><div class="reset"></div></div>
+        <div class="dots" hidden><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+        <button class="face-controls cursor-interaction" type="button" aria-label="轻触表盘查看或切换额度详情"></button>
+      </div>
+      <div class="switches" aria-label="预览页面"><button type="button" data-page="home" aria-pressed="true">表盘</button><button type="button" data-page="five" aria-pressed="false">五小时</button><button type="button" data-page="week" aria-pressed="false">Codex 周</button><button type="button" data-page="x" aria-pressed="false">X 周</button></div>
+    </div><div class="sample">设计示意 · 全部数值为示例 · 点击圆屏切换详情</div></div>
+  </section>
+  <section data-variant="三段外圈" aria-label="三段外圈方案" hidden>
+    <div class="stage"><div class="product" data-layout="segments" aria-label="三段外圈交互预览">
+      <div class="dial">
+        <svg class="rings" viewBox="0 0 466 466" role="img" aria-label="三项独立额度分区"><g class="ring-data"></g></svg>
+        <div class="clock">20:18</div><div class="eyes"><div class="eye"></div><div class="eye"></div></div>
+        <div class="detail" hidden aria-live="polite"><div class="detail-label"></div><div class="number"></div><div class="remaining">remaining</div><div class="reset"></div></div>
+        <div class="dots" hidden><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+        <button class="face-controls cursor-interaction" type="button" aria-label="轻触表盘查看或切换额度详情"></button>
+      </div>
+      <div class="switches" aria-label="预览页面"><button type="button" data-page="home" aria-pressed="true">表盘</button><button type="button" data-page="five" aria-pressed="false">五小时</button><button type="button" data-page="week" aria-pressed="false">Codex 周</button><button type="button" data-page="x" aria-pressed="false">X 周</button></div>
+    </div><div class="sample">设计示意 · 全部数值为示例 · 点击圆屏切换详情</div></div>
+  </section>
+</div>
+<script>
+(()=>{
+const root=document.getElementById('vibe-round-design');
+const order=['home','five','week','x'];
+const metrics={five:{name:'Codex · 5 hours',value:68,reset:'Resets in 2h 18m',color:'var(--v-five)'},week:{name:'Codex · Weekly',value:82,reset:'Resets in 3d 6h',color:'var(--v-week)'},x:{name:'X · Shared weekly',value:90,reset:'Resets in 4d 18h',color:'var(--v-x)'}};
+const saved=window.openai?.widgetState?.modelContent||{};
+const model={...saved};
+function point(r,d){const a=d*Math.PI/180;return [233+r*Math.cos(a),233+r*Math.sin(a)];}
+function arc(r,a,b,color,w){const p=point(r,a),q=point(r,b);return `<path d="M ${p[0]} ${p[1]} A ${r} ${r} 0 ${b-a>180?1:0} 1 ${q[0]} ${q[1]}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round"/>`;}
+root.querySelectorAll('.product').forEach(product=>{
+const layout=product.dataset.layout;
+let page=order.includes(model[layout])?model[layout]:'home';
+const state={fiveHourRemaining:68};
+function render(){
+ metrics.five.value=state.fiveHourRemaining;
+ let marks='';
+ function quota(r,a,b,key,w){marks+=arc(r,a,b,'var(--v-track)',w);if(metrics[key].value>0)marks+=arc(r,a,a+(b-a)*metrics[key].value/100,metrics[key].color,w);}
+ if(page==='home'){
+   if(layout==='subdial'){
+     marks='<circle cx="233" cy="233" r="214" fill="none" stroke="var(--v-track)" stroke-width="13"/>';
+     marks+=arc(214,90,90+180*metrics.week.value/100,metrics.week.color,13);
+     marks+=arc(214,450-180*metrics.x.value/100,450,metrics.x.color,13);
+     quota(137,40,140,'five',9);
+   }else{
+     quota(214,154,266,'week',13);quota(214,274,386,'x',13);quota(214,34,146,'five',13);
+   }
+ }else{quota(207,130,410,page,15);}
+ product.querySelector('.ring-data').innerHTML=marks;
+ product.querySelector('.clock').hidden=page!=='home';
+ product.querySelector('.eyes').hidden=page!=='home';
+ product.querySelector('.detail').hidden=page==='home';
+ product.querySelector('.dots').hidden=page==='home';
+ if(page!=='home'){
+   const m=metrics[page];product.querySelector('.detail-label').textContent=m.name;
+   product.querySelector('.number').innerHTML=`${m.value}<span>%</span>`;
+   product.querySelector('.reset').textContent=m.reset;
+   product.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===order.indexOf(page)-1));
+ }
+ product.querySelectorAll('[data-page]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.page===page)));
+}
+function change(next){page=next;render();model[layout]=page;window.openai?.setWidgetState({modelContent:model}).catch(()=>{});}
+product.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>change(b.dataset.page)));
+product.querySelector('.face-controls').addEventListener('click',()=>change(order[(order.indexOf(page)+1)%order.length]));
+let downX=0;
+product.querySelector('.face-controls').addEventListener('pointerdown',e=>{downX=e.clientX;});
+product.querySelector('.face-controls').addEventListener('pointerup',e=>{if(Math.abs(e.clientX-downX)>40){e.currentTarget.addEventListener('click',e=>{e.stopImmediatePropagation();e.preventDefault();},{once:true,capture:true});change(order[(order.indexOf(page)+(e.clientX<downX?1:3))%order.length]);}});
+render();
+if(globalThis.Tweak){const tweak=new Tweak({container:product,onChange:render});tweak.addSlider(state,'fiveHourRemaining',{label:'五小时示例剩余',min:0,max:100,step:1,unit:'%'});}
+});
+})();
+</script>
